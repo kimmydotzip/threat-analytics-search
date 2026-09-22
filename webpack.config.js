@@ -4,11 +4,12 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const Webpack = require("webpack");
-const Dotenv = require("dotenv");
+const { resolveTarget } = require("./build/targets.js");
 
-module.exports = (env) => (
-  Dotenv.config({ path: `./${env.mode}.env` }),
-  {
+module.exports = (env) => {
+  const { UPDATE_URL, BROWSER_NAME } = resolveTarget(env.mode);
+
+  return {
     entry: {
       background: "./src/background.js",
       "js/migration": "./src/js/migration.js",
@@ -55,7 +56,7 @@ module.exports = (env) => (
     },
     plugins: [
       new Webpack.DefinePlugin({
-        "process.env.BROWSER_NAME": JSON.stringify(process.env.BROWSER_NAME),
+        "process.env.BROWSER_NAME": JSON.stringify(BROWSER_NAME),
       }),
       new HtmlWebpackPlugin({
         template: "./src/options.html",
@@ -75,7 +76,7 @@ module.exports = (env) => (
       new HtmlReplaceWebpackPlugin([
         {
           pattern: "@@browserName",
-          replacement: process.env.BROWSER_NAME,
+          replacement: BROWSER_NAME,
         },
       ]),
       new CopyWebpackPlugin({
@@ -100,7 +101,8 @@ module.exports = (env) => (
             transform(content) {
               return content
                 .toString()
-                .replace("process.env.update_url", process.env.UPDATE_URL);            },
+                .replace("process.env.update_url", UPDATE_URL);
+            },
           },
           {
             from: "./settings.json",
@@ -118,5 +120,5 @@ module.exports = (env) => (
         },
       },
     },
-  }
-);
+  };
+};
