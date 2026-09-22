@@ -72,7 +72,7 @@
   <a
     id="logo-link"
     target="_blank"
-    title="Threat Analytics @@browserName plugin notes"
+    title="Threat Analytics {process.env.BROWSER_NAME} plugin notes"
     href={HOME_URL}
   >
     <img src="./images/icon_128.png" alt="CRITICALSTART logo" height="90px" />
