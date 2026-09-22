@@ -61,7 +61,7 @@ describe("ContextualMenu", () => {
     it("One menu item should be added for each non-disabled search provider", async () => {
       // Ensure that there is at least one provider enabled and one disabled.
       const searchProviders = _.cloneDeep(
-        (await LocalStore.getOne(StoreKey.SEARCH_PROVIDERS)) || []
+        (await LocalStore.getOne(StoreKey.SEARCH_PROVIDERS)) || [],
       );
       if (searchProviders.length >= 2) {
         searchProviders[0].enabled = true;
@@ -93,12 +93,12 @@ describe("ContextualMenu", () => {
     it("One menu item should be added for each non-disabled special provider", async () => {
       // Ensure that there is at least one provider enabled and one disabled, same for queries.
       const carbonBlack = _.cloneDeep(
-        (await LocalStore.getOne(StoreKey.CARBON_BLACK)) || {}
+        (await LocalStore.getOne(StoreKey.CARBON_BLACK)) || {},
       );
       carbonBlack.CBCConfigEnable = false;
 
       const netWitness = _.cloneDeep(
-        (await LocalStore.getOne(StoreKey.NET_WITNESS)) || {}
+        (await LocalStore.getOne(StoreKey.NET_WITNESS)) || {},
       );
       netWitness.NWIConfigEnable = true;
       if (netWitness.queries.length >= 2) {
@@ -141,14 +141,14 @@ describe("ContextualMenu", () => {
             expect.objectContaining({
               title: provider.title,
               contexts: ["selection"],
-            })
+            }),
           );
         } else {
           expect(createContextMenu).not.toBeCalledWith(
             expect.objectContaining({
               title: provider.title,
               contexts: ["selection"],
-            })
+            }),
           );
         }
 
@@ -160,14 +160,14 @@ describe("ContextualMenu", () => {
               expect.objectContaining({
                 title: query.label,
                 contexts: ["selection"],
-              })
+              }),
             );
           } else {
             expect(createContextMenu).not.toBeCalledWith(
               expect.objectContaining({
                 title: query.label,
                 contexts: ["selection"],
-              })
+              }),
             );
           }
         }
@@ -309,7 +309,7 @@ describe("ContextualMenu", () => {
         chrome.windows.create.withArgs({
           url: urls,
           focused: !settings.resultsInBackgroundTab,
-        }).calledOnce
+        }).calledOnce,
       ).toBe(true);
 
       // If should open in new tabs.
@@ -524,7 +524,7 @@ describe("ContextualMenu", () => {
         chrome.windows.create.withArgs({
           url: urls,
           focused: !settings.resultsInBackgroundTab,
-        }).calledOnce
+        }).calledOnce,
       ).toBe(true);
     });
 

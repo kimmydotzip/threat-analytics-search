@@ -38,7 +38,7 @@ async function testPostHandler(sample, text) {
           chrome.storage.local.set(payload, resolve);
         }),
       StoreKey.SEARCH_PROVIDERS,
-      sample
+      sample,
     );
 
     // Set interceptor for requests.

@@ -1,5 +1,5 @@
 export const MiscURLs = {
-  ABOUT_US_URL: "https://www.criticalstart.com/our-story",
+  ABOUT_US_URL: "https://www.criticalstart.com/about",
   CRITICALSTART_URL: "https://www.criticalstart.com",
   EXTENSION_HOME_URL:
     "https://github.com/AdvancedThreatAnalytics/threat-analytics-search",

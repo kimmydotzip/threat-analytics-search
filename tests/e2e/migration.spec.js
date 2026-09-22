@@ -59,7 +59,7 @@ describe("Migration (from v4.0)", () => {
       for (const key in data) {
         window.localStorage.setItem(
           key,
-          _.isString(data[key]) ? data[key] : JSON.stringify(data[key])
+          _.isString(data[key]) ? data[key] : JSON.stringify(data[key]),
         );
       }
     }, sampleData);
@@ -81,7 +81,7 @@ describe("Migration (from v4.0)", () => {
 
     // Get data from Chrome storage.
     const chromeData = await page.evaluate(
-      () => new Promise((resolve) => chrome.storage.local.get(null, resolve))
+      () => new Promise((resolve) => chrome.storage.local.get(null, resolve)),
     );
 
     // Update menu index to its initial value as
@@ -185,7 +185,7 @@ describe("Migration (from v4.0)", () => {
 
     // Get data from Chrome storage.
     const chromeData = await page.evaluate(
-      () => new Promise((resolve) => chrome.storage.local.get(null, resolve))
+      () => new Promise((resolve) => chrome.storage.local.get(null, resolve)),
     );
 
     // Update menu index to its initial value as
@@ -230,7 +230,7 @@ describe("Migration (from v4.0)", () => {
       },
 
       [StoreKey.SEARCH_PROVIDERS]: ConfigFile.parseProviders(
-        _.get(SETTINGS, "searchproviders", [])
+        _.get(SETTINGS, "searchproviders", []),
       ),
 
       [StoreKey.CARBON_BLACK]: {

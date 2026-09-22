@@ -40,21 +40,21 @@ document.addEventListener("DOMContentLoaded", async function () {
       "CBC",
       "_CBCConfig",
       "_CBCallquery",
-      defaultFile
+      defaultFile,
     ),
     migrateSpecialProvider(
       StoreKey.NET_WITNESS,
       "NWI",
       "_NWIConfig",
       "_NWIallquery",
-      defaultFile
+      defaultFile,
     ),
     migrateSpecialProvider(
       StoreKey.RSA_SECURITY,
       "RSA",
       "_RSAConfig",
       "_RSAallquery",
-      defaultFile
+      defaultFile,
     ),
     migrateOthers(),
   ]);
@@ -125,8 +125,8 @@ function migrateSearchProviders(defaultFile) {
     StoreKey.SEARCH_PROVIDERS,
     ConfigFile.parseProviders(
       tryJSONparse(Storage.getItem("_allsearch")) ||
-        _.get(defaultFile, "searchproviders", [])
-    )
+        _.get(defaultFile, "searchproviders", []),
+    ),
   );
 }
 
@@ -135,7 +135,7 @@ function migrateSpecialProvider(
   fileKey,
   configKey,
   queryKey,
-  defaultFile
+  defaultFile,
 ) {
   return LocalStore.setOne(storeKey, {
     config:
@@ -143,7 +143,7 @@ function migrateSpecialProvider(
       _.get(defaultFile, `${fileKey}.Config`, {}),
     queries: ConfigFile.parseQueries(
       tryJSONparse(Storage.getItem(queryKey)) ||
-        _.get(defaultFile, `${fileKey}.Queries`, [])
+        _.get(defaultFile, `${fileKey}.Queries`, []),
     ),
   });
 }
@@ -151,7 +151,7 @@ function migrateSpecialProvider(
 function migrateOthers() {
   return LocalStore.setOne(
     StoreKey.LAST_CONFIG_DATA,
-    parseLastRefresh(Storage.getItem("_configLastRefresh"))
+    parseLastRefresh(Storage.getItem("_configLastRefresh")),
   );
 }
 

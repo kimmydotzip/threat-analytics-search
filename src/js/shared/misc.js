@@ -21,7 +21,7 @@ export function getProviderTargetURL(provider, selectionText) {
     targetURL = targetURL.replace(/%s/g, selectionText);
     targetURL = targetURL.replace(
       /TESTB64SEARCH/g,
-      encodeURIComponent(btoa(selectionText))
+      encodeURIComponent(btoa(selectionText)),
     );
   }
 

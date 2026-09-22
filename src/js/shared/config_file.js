@@ -58,7 +58,7 @@ async function updateSearchProviders(
   settings,
   newProviders,
   updateActions,
-  forceOverride
+  forceOverride,
 ) {
   // Get menu items (with current search providers).
   let searchProviders =
@@ -93,7 +93,7 @@ async function updateSearchProviders(
       if (
         !_.find(
           searchProviders,
-          (provider) => provider.link === newProvider.link
+          (provider) => provider.link === newProvider.link,
         )
       ) {
         searchProviders.push(newProvider);
@@ -165,7 +165,7 @@ const ConfigFile = {
     storeKey,
     newData,
     mergeKey,
-    forceOverride
+    forceOverride,
   ) {
     const settings = await LocalStore.getOne(StoreKey.SETTINGS);
     const shouldOverrideConfig =
@@ -227,7 +227,7 @@ const ConfigFile = {
     }
     await LocalStore.setOne(
       StoreKey.SETTINGS,
-      _.assign(newSettings, oldSettings)
+      _.assign(newSettings, oldSettings),
     );
 
     // Sanitize search providers.
@@ -235,7 +235,7 @@ const ConfigFile = {
     if (_.isEmpty(providers)) {
       await LocalStore.setOne(
         StoreKey.SEARCH_PROVIDERS,
-        ConfigFile.parseProviders(defaultFile.searchproviders)
+        ConfigFile.parseProviders(defaultFile.searchproviders),
       );
     }
 
@@ -257,7 +257,7 @@ const ConfigFile = {
       }
       if (!_.isArray(data.queries)) {
         data.queries = ConfigFile.parseQueries(
-          _.get(defaultFile, `${special.fileKey}.Queries`)
+          _.get(defaultFile, `${special.fileKey}.Queries`),
         );
       }
       LocalStore.setOne(special.storeKey, data);
@@ -290,7 +290,7 @@ const ConfigFile = {
           } else {
             settings.providersGroups.splice(
               3,
-              settings.providersGroups.length - 3
+              settings.providersGroups.length - 3,
             );
           }
         }
@@ -306,7 +306,7 @@ const ConfigFile = {
       settings,
       newProviders,
       _.get(newData, "update.providers"),
-      overrideAll
+      overrideAll,
     );
 
     // Update configuration values and queries for RSA, NWI and CBC.
@@ -314,19 +314,19 @@ const ConfigFile = {
       StoreKey.RSA_SECURITY,
       newData.RSA,
       "mergeRSA",
-      overrideAll
+      overrideAll,
     );
     await ConfigFile.updateSpecialProvider(
       StoreKey.NET_WITNESS,
       newData.NWI,
       "mergeNWI",
-      overrideAll
+      overrideAll,
     );
     await ConfigFile.updateSpecialProvider(
       StoreKey.CARBON_BLACK,
       newData.CBC,
       "mergeCBC",
-      overrideAll
+      overrideAll,
     );
   },
 

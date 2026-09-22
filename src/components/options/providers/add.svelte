@@ -1,109 +1,111 @@
 <script>
-import _ from "lodash";
-import Notiflix from "notiflix";
-import { createEventDispatcher } from "svelte";
+  import _ from "lodash";
+  import Notiflix from "notiflix";
+  import { createEventDispatcher } from "svelte";
 
-import { isJson, isUrl, isSearchable } from "../../../js/shared/misc";
-import LocalStore from "../../../js/shared/local_store";
-import { MiscURLs, StoreKey } from "../../../js/shared/constants";
+  import { isJson, isUrl, isSearchable } from "../../../js/shared/misc";
+  import LocalStore from "../../../js/shared/local_store";
+  import { MiscURLs, StoreKey } from "../../../js/shared/constants";
 
-const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher();
 
-// Constants.
-const DEFAULT = {
-  label: "",
-  link: "",
-  postEnabled: false,
-  postValue: null,
-  proxyEnabled: false,
-  proxyUrl: null,
-};
+  // Constants.
+  const DEFAULT = {
+    label: "",
+    link: "",
+    postEnabled: false,
+    postValue: null,
+    proxyEnabled: false,
+    proxyUrl: null,
+  };
 
-// States.
-let editData = _.clone(DEFAULT);
-let errors = {};
-let warning;
+  // States.
+  let editData = _.clone(DEFAULT);
+  let errors = {};
+  let warning;
 
-// Methods.
-async function add() {
-  if (validate()) {
-    // Add new provider
-    const searchProviders = await LocalStore.getOne(StoreKey.SEARCH_PROVIDERS);
-    searchProviders.push({
-      menuIndex: -1,
-      enabled: true,
-      fromConfig: false,
-      group: 0,
-      ...editData,
-    });
-    await LocalStore.setOne(StoreKey.SEARCH_PROVIDERS, searchProviders);
+  // Methods.
+  async function add() {
+    if (validate()) {
+      // Add new provider
+      const searchProviders = await LocalStore.getOne(
+        StoreKey.SEARCH_PROVIDERS,
+      );
+      searchProviders.push({
+        menuIndex: -1,
+        enabled: true,
+        fromConfig: false,
+        group: 0,
+        ...editData,
+      });
+      await LocalStore.setOne(StoreKey.SEARCH_PROVIDERS, searchProviders);
 
-    // Clear form
-    clear();
+      // Clear form
+      clear();
 
-    Notiflix.Notify.Success("Option added successfully");
-    dispatch("updateMainConfiguration");
-  }
-}
-
-function validate() {
-  validateLabel();
-  validateLink();
-  validatePost();
-  validateProxy();
-
-  if (!_.isEmpty(errors)) {
-    Notiflix.Notify.Failure("Some fields are empty or have invalid values");
-    return false;
+      Notiflix.Notify.Success("Option added successfully");
+      dispatch("updateMainConfiguration");
+    }
   }
 
-  return true;
-}
+  function validate() {
+    validateLabel();
+    validateLink();
+    validatePost();
+    validateProxy();
 
-function updateError(field, isInvalid) {
-  if (isInvalid) {
-    errors[field] = true;
-  } else {
-    delete errors[field];
-  }
-  errors = { ...errors };
-}
+    if (!_.isEmpty(errors)) {
+      Notiflix.Notify.Failure("Some fields are empty or have invalid values");
+      return false;
+    }
 
-function validateLabel() {
-  updateError("label", _.isEmpty(editData.label));
-}
-
-// "isActive" is 'true', when user is typing on the input field.
-// It is used not to add any warning or error when user is typing.
-function validateLink(isActive) {
-  if (!isActive || errors.link) {
-    updateError("link", !isUrl(editData.link));
+    return true;
   }
 
-  if (errors["link"] || isSearchable(editData.link)) {
+  function updateError(field, isInvalid) {
+    if (isInvalid) {
+      errors[field] = true;
+    } else {
+      delete errors[field];
+    }
+    errors = { ...errors };
+  }
+
+  function validateLabel() {
+    updateError("label", _.isEmpty(editData.label));
+  }
+
+  // "isActive" is 'true', when user is typing on the input field.
+  // It is used not to add any warning or error when user is typing.
+  function validateLink(isActive) {
+    if (!isActive || errors.link) {
+      updateError("link", !isUrl(editData.link));
+    }
+
+    if (errors["link"] || isSearchable(editData.link)) {
+      warning = null;
+    } else if (!isActive) {
+      warning = "The link contains neither TESTSEARCH nor TESTB64SEARCH";
+    }
+  }
+
+  function validatePost() {
+    updateError(
+      "postValue",
+      editData.postEnabled &&
+        (_.isEmpty(editData.postValue) || !isJson(editData.postValue)),
+    );
+  }
+
+  function validateProxy() {
+    updateError("proxyUrl", editData.proxyEnabled && !isUrl(editData.proxyUrl));
+  }
+
+  function clear() {
+    editData = _.clone(DEFAULT);
+    errors = {};
     warning = null;
-  } else if (!isActive) {
-    warning = "The link contains neither TESTSEARCH nor TESTB64SEARCH";
   }
-}
-
-function validatePost() {
-  updateError(
-    "postValue",
-    editData.postEnabled &&
-      (_.isEmpty(editData.postValue) || !isJson(editData.postValue))
-  );
-}
-
-function validateProxy() {
-  updateError("proxyUrl", editData.proxyEnabled && !isUrl(editData.proxyUrl));
-}
-
-function clear() {
-  editData = _.clone(DEFAULT);
-  errors = {};
-  warning = null;
-}
 </script>
 
 <div>
@@ -127,7 +129,8 @@ function clear() {
     <a
       id="extension_home_url"
       target="_blank"
-      href="{MiscURLs.EXTENSION_HOME_URL}">
+      href={MiscURLs.EXTENSION_HOME_URL}
+    >
       {MiscURLs.EXTENSION_HOME_URL}}
     </a>.
   </p>
@@ -142,13 +145,14 @@ function clear() {
           <input
             type="text"
             class="form-control"
-            class:is-invalid="{errors.label}"
+            class:is-invalid={errors.label}
             name="label"
             placeholder="Label to be used in the context menu"
             id="providers_name"
-            bind:value="{editData.label}"
-            on:blur="{validateLabel}"
-            on:input="{() => errors.label && validateLabel()}" />
+            bind:value={editData.label}
+            on:blur={validateLabel}
+            on:input={() => errors.label && validateLabel()}
+          />
           {#if errors.label}
             <div class="invalid-feedback ml-1">The value must not be empty</div>
           {/if}
@@ -160,13 +164,14 @@ function clear() {
           <input
             type="text"
             class="form-control"
-            class:is-invalid="{errors.link}"
+            class:is-invalid={errors.link}
             name="link"
             placeholder="URL address to which send requests"
             id="providers_link"
-            bind:value="{editData.link}"
-            on:blur="{() => validateLink()}"
-            on:input="{() => validateLink(true)}" />
+            bind:value={editData.link}
+            on:blur={() => validateLink()}
+            on:input={() => validateLink(true)}
+          />
           {#if errors.link}
             <div class="invalid-feedback ml-1">
               {editData.link
@@ -189,8 +194,9 @@ function clear() {
               type="checkbox"
               class="form-check-input"
               name="postEnabled"
-              bind:checked="{editData.postEnabled}"
-              on:change="{() => errors.postValue && validatePost()}" />
+              bind:checked={editData.postEnabled}
+              on:change={() => errors.postValue && validatePost()}
+            />
             Add POST value
           </label>
         </div>
@@ -199,13 +205,14 @@ function clear() {
         <input
           type="text"
           class="form-control text-monospace"
-          class:is-invalid="{errors.postValue}"
+          class:is-invalid={errors.postValue}
           name="postValue"
           placeholder="JSON object to send in POST request"
-          disabled="{!editData.postEnabled}"
-          bind:value="{editData.postValue}"
-          on:blur="{validatePost}"
-          on:input="{() => errors.postValue && validatePost()}" />
+          disabled={!editData.postEnabled}
+          bind:value={editData.postValue}
+          on:blur={validatePost}
+          on:input={() => errors.postValue && validatePost()}
+        />
         {#if errors.postValue}
           <div class="invalid-feedback ml-1">
             {editData.postValue
@@ -224,8 +231,9 @@ function clear() {
               type="checkbox"
               class="form-check-input"
               name="proxyEnabled"
-              bind:checked="{editData.proxyEnabled}"
-              on:change="{() => errors.proxyUrl && validateProxy()}" />
+              bind:checked={editData.proxyEnabled}
+              on:change={() => errors.proxyUrl && validateProxy()}
+            />
             Use Proxy
           </label>
         </div>
@@ -234,13 +242,14 @@ function clear() {
         <input
           type="text"
           class="form-control"
-          class:is-invalid="{errors.proxyUrl}"
+          class:is-invalid={errors.proxyUrl}
           name="proxyUrl"
           placeholder="URL address of Proxy server"
-          disabled="{!editData.proxyEnabled}"
-          bind:value="{editData.proxyUrl}"
-          on:blur="{validateProxy}"
-          on:input="{() => errors.proxyUrl && validateProxy()}" />
+          disabled={!editData.proxyEnabled}
+          bind:value={editData.proxyUrl}
+          on:blur={validateProxy}
+          on:input={() => errors.proxyUrl && validateProxy()}
+        />
         {#if errors.proxyUrl}
           <div class="invalid-feedback ml-1">
             {editData.proxyUrl
@@ -255,7 +264,8 @@ function clear() {
       <button
         type="submit"
         class="btn btn-success"
-        on:click|preventDefault="{add}">
+        on:click|preventDefault={add}
+      >
         <i class="fas fa-plus-circle" aria-hidden="true"></i> Add new option
       </button>
     </div>

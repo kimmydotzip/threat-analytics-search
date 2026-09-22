@@ -106,13 +106,13 @@ describe("ConfigFile", () => {
 
       // Change data in local storage.
       const settings = _.cloneDeep(
-        (await LocalStore.getOne(StoreKey.SETTINGS)) || {}
+        (await LocalStore.getOne(StoreKey.SETTINGS)) || {},
       );
       const providers = _.cloneDeep(
-        (await LocalStore.getOne(StoreKey.SEARCH_PROVIDERS)) || {}
+        (await LocalStore.getOne(StoreKey.SEARCH_PROVIDERS)) || {},
       );
       const rsa = _.cloneDeep(
-        (await LocalStore.getOne(StoreKey.RSA_SECURITY)) || {}
+        (await LocalStore.getOne(StoreKey.RSA_SECURITY)) || {},
       );
       settings.configEncrypted = true;
       settings.configEncryptionKey = "some password";
@@ -136,7 +136,7 @@ describe("ConfigFile", () => {
       expectedSettings.RSA.Config.RSAConfigEnable = true;
       expectedSettings.RSA.Config = _.omit(
         expectedSettings.RSA.Config,
-        "RSAConfigRange4"
+        "RSAConfigRange4",
       );
       expectedSettings.RSA.Queries.shift();
       expectedSettings.RSA.Queries[0][1] = "changed label";
@@ -214,7 +214,7 @@ describe("ConfigFile", () => {
       await ConfigFile.updateSpecialProvider(
         StoreKey.RSA_SECURITY,
         { ...defaultSettings.RSA, Config: newConfig },
-        "mergeRSA"
+        "mergeRSA",
       );
 
       const result = await LocalStore.getOne(StoreKey.RSA_SECURITY);
@@ -223,7 +223,7 @@ describe("ConfigFile", () => {
 
     it("Configuration should be overridden if corresponding flag is enabled", async () => {
       const settings = _.cloneDeep(
-        (await LocalStore.getOne(StoreKey.SETTINGS)) || {}
+        (await LocalStore.getOne(StoreKey.SETTINGS)) || {},
       );
       settings.mergeRSA.config = true;
       await LocalStore.setOne(StoreKey.SETTINGS, settings);
@@ -239,7 +239,7 @@ describe("ConfigFile", () => {
       await ConfigFile.updateSpecialProvider(
         StoreKey.RSA_SECURITY,
         { ...defaultSettings.RSA, Config: newConfig },
-        "mergeRSA"
+        "mergeRSA",
       );
 
       const result = await LocalStore.getOne(StoreKey.RSA_SECURITY);
@@ -248,7 +248,7 @@ describe("ConfigFile", () => {
 
     it("Configuration should be overridden if forced (no matter the value of corresponding flag)", async () => {
       const settings = _.cloneDeep(
-        (await LocalStore.getOne(StoreKey.SETTINGS)) || {}
+        (await LocalStore.getOne(StoreKey.SETTINGS)) || {},
       );
       settings.mergeRSA.config = false;
       await LocalStore.setOne(StoreKey.SETTINGS, settings);
@@ -265,7 +265,7 @@ describe("ConfigFile", () => {
         StoreKey.RSA_SECURITY,
         { ...defaultSettings.RSA, Config: newConfig },
         "mergeRSA",
-        true
+        true,
       );
 
       const result = await LocalStore.getOne(StoreKey.RSA_SECURITY);
@@ -281,7 +281,7 @@ describe("ConfigFile", () => {
       await ConfigFile.updateSpecialProvider(
         StoreKey.RSA_SECURITY,
         { ...defaultSettings.RSA, Queries: newQueries },
-        "mergeRSA"
+        "mergeRSA",
       );
 
       // NOTE: Duplicates queries shouldn't be added.
@@ -294,7 +294,7 @@ describe("ConfigFile", () => {
 
     it("Queries should be overridden if corresponding flag indicates it", async () => {
       const settings = _.cloneDeep(
-        (await LocalStore.getOne(StoreKey.SETTINGS)) || {}
+        (await LocalStore.getOne(StoreKey.SETTINGS)) || {},
       );
       settings.mergeRSA.queries = "override";
       await LocalStore.setOne(StoreKey.SETTINGS, settings);
@@ -303,7 +303,7 @@ describe("ConfigFile", () => {
       await ConfigFile.updateSpecialProvider(
         StoreKey.RSA_SECURITY,
         { ...defaultSettings.RSA, Queries: newQueries },
-        "mergeRSA"
+        "mergeRSA",
       );
 
       const result = await LocalStore.getOne(StoreKey.RSA_SECURITY);
@@ -312,7 +312,7 @@ describe("ConfigFile", () => {
 
     it("Queries should be overridden if forced (no matter the value of corresponding flag)", async () => {
       const settings = _.cloneDeep(
-        (await LocalStore.getOne(StoreKey.SETTINGS)) || {}
+        (await LocalStore.getOne(StoreKey.SETTINGS)) || {},
       );
       settings.mergeRSA.queries = "ignore";
       await LocalStore.setOne(StoreKey.SETTINGS, settings);
@@ -322,7 +322,7 @@ describe("ConfigFile", () => {
         StoreKey.RSA_SECURITY,
         { ...defaultSettings.RSA, Queries: newQueries },
         "mergeRSA",
-        true
+        true,
       );
 
       const result = await LocalStore.getOne(StoreKey.RSA_SECURITY);
@@ -331,7 +331,7 @@ describe("ConfigFile", () => {
 
     it("Queries should be preserved if corresponding flag indicates it", async () => {
       const settings = _.cloneDeep(
-        (await LocalStore.getOne(StoreKey.SETTINGS)) || {}
+        (await LocalStore.getOne(StoreKey.SETTINGS)) || {},
       );
       settings.mergeRSA.queries = "ignore";
       await LocalStore.setOne(StoreKey.SETTINGS, settings);
@@ -340,12 +340,12 @@ describe("ConfigFile", () => {
       await ConfigFile.updateSpecialProvider(
         StoreKey.RSA_SECURITY,
         { ...defaultSettings.RSA, Queries: newQueries },
-        "mergeRSA"
+        "mergeRSA",
       );
 
       const result = await LocalStore.getOne(StoreKey.RSA_SECURITY);
       expect(result.queries).toEqual(
-        ConfigFile.parseQueries(defaultSettings.RSA.Queries)
+        ConfigFile.parseQueries(defaultSettings.RSA.Queries),
       );
     });
   });
@@ -365,7 +365,7 @@ describe("ConfigFile", () => {
 
       const settings = (await LocalStore.getOne(StoreKey.SETTINGS)) || {};
       const expectedSettings = ConfigFile.parseBasicSettings(
-        defaultSettings.config
+        defaultSettings.config,
       );
       expect(_.omit(settings, "providersGroups")).toEqual(expectedSettings);
     });
@@ -422,7 +422,7 @@ describe("ConfigFile", () => {
       ];
       await ConfigFile.parseJSONFile(
         { ...defaultSettings, groups: newGroups },
-        true
+        true,
       );
 
       settings = (await LocalStore.getOne(StoreKey.SETTINGS)) || {};
@@ -466,15 +466,15 @@ describe("ConfigFile", () => {
       });
 
       const newSearchProviders = _.cloneDeep(
-        defaultSettings.searchproviders
+        defaultSettings.searchproviders,
       ).splice(0, 2);
       await ConfigFile.parseJSONFile({ searchproviders: newSearchProviders });
 
       const searchProviders = await LocalStore.getOne(
-        StoreKey.SEARCH_PROVIDERS
+        StoreKey.SEARCH_PROVIDERS,
       );
       expect(searchProviders).toEqual(
-        ConfigFile.parseProviders(newSearchProviders)
+        ConfigFile.parseProviders(newSearchProviders),
       );
     });
 
@@ -487,7 +487,7 @@ describe("ConfigFile", () => {
         ];
         await ConfigFile.parseJSONFile(
           { ...defaultSettings, groups: newGroups },
-          true
+          true,
         );
 
         const settings = (await LocalStore.getOne(StoreKey.SETTINGS)) || {};
@@ -505,7 +505,7 @@ describe("ConfigFile", () => {
         ];
         await ConfigFile.parseJSONFile(
           { ...defaultSettings, groups: newGroups },
-          true
+          true,
         );
 
         const settings = (await LocalStore.getOne(StoreKey.SETTINGS)) || {};
@@ -522,7 +522,7 @@ describe("ConfigFile", () => {
         ];
         await ConfigFile.parseJSONFile(
           { ...defaultSettings, groups: newGroups },
-          true
+          true,
         );
 
         let settings = (await LocalStore.getOne(StoreKey.SETTINGS)) || {};
@@ -533,7 +533,7 @@ describe("ConfigFile", () => {
       it("Undefined groups should be disabled", async () => {
         await ConfigFile.parseJSONFile(
           { ...defaultSettings, groups: [["1", "New Group 1"]] },
-          true
+          true,
         );
 
         const settings = (await LocalStore.getOne(StoreKey.SETTINGS)) || {};
@@ -568,10 +568,10 @@ describe("ConfigFile", () => {
 
       // Get default settings and groups.
       const defaultConfig = ConfigFile.parseBasicSettings(
-        defaultSettings.config
+        defaultSettings.config,
       );
       defaultConfig.providersGroups = ConfigFile.parseGroups(
-        defaultSettings.groups
+        defaultSettings.groups,
       );
 
       // Check if missing fields are initialized with default values.
@@ -623,7 +623,7 @@ describe("ConfigFile", () => {
       // Check if search providers are initialized with default values.
       const providers = await LocalStore.getOne(StoreKey.SEARCH_PROVIDERS);
       const expectedProviders = ConfigFile.parseProviders(
-        defaultSettings.searchproviders
+        defaultSettings.searchproviders,
       );
       expect(providers).toEqual(expectedProviders);
     });
@@ -652,7 +652,7 @@ describe("ConfigFile", () => {
         const expectedData = {
           config: _.get(defaultSettings, `${provider.fileKey}.Config`, {}),
           queries: ConfigFile.parseQueries(
-            _.get(defaultSettings, `${provider.fileKey}.Queries`, [])
+            _.get(defaultSettings, `${provider.fileKey}.Queries`, []),
           ),
         };
 

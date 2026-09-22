@@ -7,7 +7,7 @@ export async function decryptAES(data, key) {
 
   const salt = data.slice(8, 16);
   const s2a = Array.from(unescape(encodeURIComponent(key)), (c) =>
-    c.charCodeAt(0)
+    c.charCodeAt(0),
   );
 
   data = data.slice(16, data.length);
@@ -19,7 +19,9 @@ export async function decryptAES(data, key) {
     const decryptedBytes = aesCbc.decrypt(data);
 
     // Remove pre added paddings and parse from byte to utf8.
-    return aesjs.utils.utf8.fromBytes(aesjs.padding.pkcs7.strip(decryptedBytes));
+    return aesjs.utils.utf8.fromBytes(
+      aesjs.padding.pkcs7.strip(decryptedBytes),
+    );
   } catch (_) {
     // Fall back to legacy MD5-based key derivation for backward compatibility
     // with data encrypted before the PBKDF2 upgrade.
@@ -28,7 +30,9 @@ export async function decryptAES(data, key) {
     const decryptedBytes = aesCbc.decrypt(data);
 
     // Remove pre added paddings and parse from byte to utf8.
-    return aesjs.utils.utf8.fromBytes(aesjs.padding.pkcs7.strip(decryptedBytes));
+    return aesjs.utils.utf8.fromBytes(
+      aesjs.padding.pkcs7.strip(decryptedBytes),
+    );
   }
 }
 
@@ -37,7 +41,7 @@ export async function encryptAES(data, password, salt) {
     salt = randArr(8);
   }
   const s2a = Array.from(unescape(encodeURIComponent(password)), (c) =>
-    c.charCodeAt(0)
+    c.charCodeAt(0),
   );
   const pbe = await openSSLKey(s2a, salt);
 
@@ -112,7 +116,7 @@ export async function openSSLKey(passwordArr, saltArr) {
     passwordBuffer,
     "PBKDF2",
     false,
-    ["deriveBits"]
+    ["deriveBits"],
   );
 
   const derivedBits = await globalThis.crypto.subtle.deriveBits(
@@ -123,7 +127,7 @@ export async function openSSLKey(passwordArr, saltArr) {
       iterations: 100000,
     },
     keyMaterial,
-    48 * 8 // 48 bytes = 32 (key) + 16 (IV)
+    48 * 8, // 48 bytes = 32 (key) + 16 (IV)
   );
 
   const derivedArr = Array.from(new Uint8Array(derivedBits));

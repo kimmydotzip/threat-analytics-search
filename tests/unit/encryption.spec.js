@@ -12,13 +12,16 @@ describe("Encryption", () => {
     const encryptedText = await encryptAES(
       JSON.stringify(defaultSettings),
       PASSWORD,
-      SALT
+      SALT,
     );
     expect(encryptedText).toEqual(encryptedSettings.encryptedData);
   });
 
   it("Test decryptAES function", async () => {
-    const decryptedText = await decryptAES(encryptedSettings.encryptedData, PASSWORD);
+    const decryptedText = await decryptAES(
+      encryptedSettings.encryptedData,
+      PASSWORD,
+    );
     expect(JSON.parse(decryptedText)).toStrictEqual(defaultSettings);
   });
 });

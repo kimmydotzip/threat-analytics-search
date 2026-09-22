@@ -417,7 +417,7 @@ export var ContextualMenu = {
       var port = config.NWIConfigPort ? ":" + config.NWIConfigPort : "";
       var useGMT = config.NWIConfigGMT;
       var historyString = escape(
-        "collection=" + config.NWIConfigCollectionName
+        "collection=" + config.NWIConfigCollectionName,
       );
 
       var query = queryItem.query.replace(/TESTSEARCH/g, info.selectionText);
@@ -443,7 +443,7 @@ export var ContextualMenu = {
       var timeString = encodeURIComponent(
         startDate.toFormat(NWI_DATETIME_FORMAT) +
           "++to++" +
-          endDate.toFormat(NWI_DATETIME_FORMAT)
+          endDate.toFormat(NWI_DATETIME_FORMAT),
       ).replace(/%2B/g, "+");
 
       // Build URL.
